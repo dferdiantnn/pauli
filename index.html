@@ -7,7 +7,6 @@
     <link rel="icon" type="image/png" href="logo.png">
     
     <style>
-    <style>
         :root {
             --bg-color: #FDFBF0;
             --card-bg: #FFFFFF;
@@ -40,7 +39,7 @@
             display: flex;
             flex-direction: column;
             height: 100%;
-            padding: 20px;
+            padding: 15px; /* Sedikit dikurangi biar muat */
             overflow-y: auto; 
             -webkit-overflow-scrolling: touch;
             margin: 0 auto;
@@ -53,8 +52,8 @@
             overflow: hidden; 
         }
 
-        h1, h2, h3, h4 { color: var(--text-dark); margin: 0.5em 0; }
-        h1 { color: #D9534F; }
+        h1, h2, h3, h4 { color: var(--text-dark); margin: 0.3em 0; }
+        h1 { color: #D9534F; font-size: 1.8rem; }
 
         .screen { display: none; flex-direction: column; min-height: 100%; }
         .screen.active { display: flex; }
@@ -64,57 +63,57 @@
             background: var(--card-bg);
             border: 2px solid #eee;
             border-radius: 20px;
-            padding: 20px;
+            padding: 15px; /* Padding dipadatkan */
             box-shadow: 0 8px 20px rgba(0,0,0,0.05);
             margin: auto 0;
         }
 
         .logo-img {
-            width: 100px; /* Atur besar kecilnya logo disini */
+            width: 70px; /* REVISI: Logo lebih kecil */
             height: auto;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
             display: block;
             margin-left: auto;
             margin-right: auto;
         }
 
-        /* TABEL INSTRUKSI (Style Mirip Referensi User) */
+        /* TABEL INSTRUKSI */
         .instruction-wrapper {
-            border: 2px solid #3D9E9E; /* Teal border like reference */
+            border: 2px solid #3D9E9E;
             border-radius: 12px;
             overflow: hidden;
-            margin: 15px 0;
-            font-family: monospace; /* Font agak teknis */
+            margin: 10px 0; /* Margin dikurangi */
+            font-family: monospace;
         }
         .instruction-header {
             display: flex;
-            background-color: #2cbbad; /* Teal background */
+            background-color: #2cbbad;
             color: white;
             font-weight: bold;
             text-align: center;
-            padding: 10px 0;
+            padding: 8px 0; /* Padding dikurangi */
+            font-size: 0.9rem;
         }
         .col-op { flex: 2; border-right: 2px solid white; }
         .col-res { flex: 1; }
         
         .instruction-row {
             display: flex;
-            background-color: #fff9e6; /* Cream background */
-            padding: 10px 0;
+            background-color: #fff9e6;
+            padding: 8px 0; /* Padding dikurangi */
             border-bottom: 1px solid #e0e0e0;
             align-items: center;
-            font-size: 1.1rem;
+            font-size: 1rem;
             color: #333;
         }
         .instruction-row:last-child { border-bottom: none; }
         .row-op { flex: 2; text-align: center; border-right: 2px solid #ddd; }
         .row-res { flex: 1; text-align: center; font-weight: bold; }
 
-        /* Highlight box pink/merah muda untuk angka satuan */
         .highlight-num {
             background-color: #ffdce0;
             color: #d32f2f;
-            padding: 2px 6px;
+            padding: 1px 5px;
             border-radius: 4px;
             font-weight: bold;
         }
@@ -122,24 +121,25 @@
         .time-options {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin-top: 20px;
+            gap: 8px; /* Gap dikurangi */
+            margin-top: 15px;
         }
 
         .btn {
-            border: none; padding: 15px; border-radius: 12px;
-            font-size: 16px; font-weight: 700; cursor: pointer; color: white;
+            border: none; padding: 12px; /* Padding tombol dikurangi */
+            border-radius: 12px;
+            font-size: 15px; font-weight: 700; cursor: pointer; color: white;
             transition: transform 0.1s; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
         .btn:active { transform: scale(0.96); }
         .btn-teal { background-color: var(--primary-btn); }
         .btn-red { background-color: var(--keypad-btn); }
-        .btn-blue { background-color: #4A90E2; width: 100%; margin: 20px 0; padding: 18px; font-size: 18px;}
+        .btn-blue { background-color: #4A90E2; width: 100%; margin: 20px 0; padding: 15px; font-size: 18px;}
 
         /* --- COUNTDOWN OVERLAY --- */
         #countdown-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(253, 251, 240, 0.98); /* Hampir solid */
+            background: rgba(253, 251, 240, 0.98);
             z-index: 9999;
             display: none;
             justify-content: center; align-items: center; flex-direction: column;
@@ -204,7 +204,6 @@
         .bg-yellow { background-color: #ffc107; }
         .bg-red { background-color: var(--danger); }
 
-        /* Personalized Analysis Box */
         .analysis-box {
             background-color: #e3f2fd;
             border-left: 5px solid #2196f3;
@@ -215,16 +214,14 @@
         .analysis-title { font-weight: bold; color: #0d47a1; margin-bottom: 8px; display: block; font-size: 1.1rem;}
         .analysis-text { color: #333; font-size: 0.95rem; line-height: 1.5; }
 
-        /* Footer Copyright */
         .footer {
             text-align: center;
             font-size: 0.85rem;
             color: #aaa;
-            padding: 20px;
+            padding: 15px;
             margin-top: auto;
             width: 100%;
         }
-
     </style>
 </head>
 <body>
@@ -239,15 +236,12 @@
         <div id="menu-screen" class="screen active">
             <div class="menu-card">
                 <div style="text-align: center; margin-bottom: 10px;">
-                    <div id="menu-screen" class="screen active">
-            <div class="menu-card">
-                <div style="text-align: center; margin-bottom: 10px;">
                      <img src="logo.png" alt="Logo IAN" class="logo-img">
                      <h1>Tes Koran</h1>
-                     <p style="color: #777; margin-top: 0px;">Simulasi Pauli & Kraepelin</p>
+                     <p style="color: #777; margin-top: 0px; font-size: 0.9rem;">Simulasi Pauli & Kraepelin</p>
                 </div>
 
-                <p style="margin-bottom: 5px; font-weight: bold; color: #555;">Cara Pengerjaan:</p>
+                <p style="margin-bottom: 5px; font-weight: bold; color: #555; font-size: 0.95rem;">Cara Pengerjaan:</p>
                 <div class="instruction-wrapper">
                     <div class="instruction-header">
                         <div class="col-op">operasi</div>
@@ -267,7 +261,7 @@
                     </div>
                 </div>
                 
-                <h4 style="text-align: center; margin-top: 25px; color: #333;">Pilih Durasi Tes</h4>
+                <h4 style="text-align: center; margin-top: 20px; color: #333; font-size: 1rem;">Pilih Durasi Tes</h4>
                 <div class="time-options">
                     <button class="btn btn-teal" onclick="initGame(60)">1 Menit</button>
                     <button class="btn btn-teal" onclick="initGame(120)">2 Menit</button>
