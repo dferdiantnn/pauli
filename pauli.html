@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tes Koran - Latihan Psikotes</title>
+    <style>
+        /* CSS: Styling biar mirip screenshot 'Belajarbro' */
+        :root {
+            --bg-color: #FDFBF0; /* Warna Krem background */
+            --primary-btn: #3D9E9E; /* Warna Teal tombol */
+            --keypad-btn: #E05D5D; /* Warna Merah Bata keypad */
+            --text-dark: #333;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--text-dark);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+            text-align: center;
+            background-color: var(--bg-color);
+            border: 2px solid #eee; /* Opsional: Border frame */
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #D9534F;
+            margin-bottom: 5px;
+        }
+
+        .screen {
+            display: none; /* Sembunyikan semua layar dulu */
+        }
+        
+        .screen.active {
+            display: block; /* Munculkan layar aktif */
+        }
+
+        /* Menu Styling */
+        .time-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            color: white;
+            transition: transform 0.1s;
+        }
+        
+        .btn:active { transform: scale(0.95); }
+
+        .btn-teal { background-color: var(--primary-btn); }
+        .btn-red { background-color: var(--keypad-btn); }
+        .btn-blue { background-color: #4A90E2; width: 100%; margin-top: 20px;}
+
+        /* Game Styling */
+        .game-area {
+            font-size: 4rem;
+            font-weight: bold;
+            margin: 20px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .number-small {
+            font-size: 2rem;
+            color: #888;
+        }
+
+        .timer-box {
+            background: #555;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        /* Keypad Grid */
+        .keypad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        /* Result Styling */
+        .result-box {
+            border: 2px solid #333;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            background: white;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div id="menu-screen" class="screen active">
+            <h1>Tes Koran</h1>
+            <p>Pilih Waktu Latihan</p>
+            <div class="time-options">
+                <button class="btn btn-red" onclick="startGame(60)">1 Menit</button>
+                <button class="btn btn-teal" onclick="startGame(120)">2 Menit</button>
+                <button class="btn btn-teal" onclick="startGame(300)">5 Menit</button>
+                <button class="btn btn-teal" onclick="startGame(600)">10 Menit</button>
+            </div>
+            <p style="font-size: 0.8rem; margin-top: 20px; color: #666;">
+                Jumlahkan dua angka, ketik <strong>satuan</strong>-nya saja.<br>
+                Contoh: 8 + 9 = 17 (Ketik 7)
+            </p>
+        </div>
+
+        <div id="game-screen" class="screen">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span id="score-display">Benar: 0</span>
+                <span class="timer-box" id="timer">01:00</span>
+            </div>
+            
+            <div class="game-area">
+                <div id="num1" class="number-small">0</div>
+                <div id="num2">0</div>
+                <div style="font-size: 1.5rem; color:#aaa;">+</div>
+            </div>
+
+            <div class="keypad">
+                <button class="btn btn-red" onclick="inputAnswer(1)">1</button>
+                <button class="btn btn-red" onclick="inputAnswer(2)">2</button>
+                <button class="btn btn-red" onclick="inputAnswer(3)">3</button>
+                <button class="btn btn-red" onclick="inputAnswer(4)">4</button>
+                <button class="btn btn-red" onclick="inputAnswer(5)">5</button>
+                <button class="btn btn-red" onclick="inputAnswer(6)">6</button>
+                <button class="btn btn-red" onclick="inputAnswer(7)">7</button>
+                <button class="btn btn-red" onclick="inputAnswer(8)">8</button>
+                <button class="btn btn-red" onclick="inputAnswer(9)">9</button>
+                <button class="btn btn-red" style="visibility: hidden;">X</button> <button class="btn btn-red" onclick="inputAnswer(0)">0</button>
+                <button class="btn btn-red" style="visibility: hidden;">X</button> </div>
+        </div>
+
+        <div id="result-screen" class="screen">
+            <h1>Selesai!</h1>
+            <div class="result-box">
+                <h2 id="final-accuracy">100%</h2>
+                <div class="stats">
+                    <div>
+                        <span style="color: green;">✔ Benar</span><br>
+                        <span id="final-correct">0</span>
+                    </div>
+                    <div>
+                        <span style="color: red;">✖ Salah</span><br>
+                        <span id="final-wrong">0</span>
+                    </div>
+                </div>
+                <p>Total Soal: <span id="final-total">0</span></p>
+            </div>
+            <button class="btn btn-blue" onclick="location.reload()">Ulangi Tes</button>
+        </div>
+    </div>
+
+    <script>
+        // --- LOGIC JAVASCRIPT ---
+        
+        let timeLimit = 60;
+        let timerInterval;
+        let correctCount = 0;
+        let wrongCount = 0;
+        let currentNum1 = 0;
+        let currentNum2 = 0;
+        let correctAnswer = 0;
+
+        // Fungsi Memulai Game
+        function startGame(seconds) {
+            timeLimit = seconds;
+            correctCount = 0;
+            wrongCount = 0;
+            
+            // Pindah Layar
+            document.getElementById('menu-screen').classList.remove('active');
+            document.getElementById('game-screen').classList.add('active');
+            
+            generateQuestion();
+            startTimer();
+        }
+
+        // Generate Soal Baru
+        function generateQuestion() {
+            // Random angka 0-9 (mirip tes koran asli)
+            // Kadang di tes koran angkanya 1-9, tapi 0 juga bisa muncul.
+            currentNum1 = Math.floor(Math.random() * 10); 
+            currentNum2 = Math.floor(Math.random() * 10);
+
+            // Tampilkan di layar
+            document.getElementById('num1').innerText = currentNum1;
+            document.getElementById('num2').innerText = currentNum2;
+
+            // Hitung Kunci Jawaban (Ambil Satuannya saja)
+            // Contoh: 8 + 9 = 17 -> Ambil 7
+            let sum = currentNum1 + currentNum2;
+            correctAnswer = sum % 10; 
+        }
+
+        // Input Jawaban User
+        function inputAnswer(userVal) {
+            if (userVal === correctAnswer) {
+                correctCount++;
+            } else {
+                wrongCount++;
+            }
+            
+            // Update Score Kecil di pojok kiri (Opsional)
+            document.getElementById('score-display').innerText = `Benar: ${correctCount}`;
+
+            // Langsung ganti soal (seperti tes koran, ga perlu enter)
+            generateQuestion();
+        }
+
+        // Timer Logic
+        function startTimer() {
+            updateTimerDisplay();
+            timerInterval = setInterval(() => {
+                timeLimit--;
+                updateTimerDisplay();
+
+                if (timeLimit <= 0) {
+                    endGame();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            let minutes = Math.floor(timeLimit / 60);
+            let seconds = timeLimit % 60;
+            // Format 00:00
+            document.getElementById('timer').innerText = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        // Game Selesai
+        function endGame() {
+            clearInterval(timerInterval);
+            
+            document.getElementById('game-screen').classList.remove('active');
+            document.getElementById('result-screen').classList.add('active');
+
+            // Tampilkan Statistik
+            document.getElementById('final-correct').innerText = correctCount;
+            document.getElementById('final-wrong').innerText = wrongCount;
+            let total = correctCount + wrongCount;
+            document.getElementById('final-total').innerText = total;
+
+            // Hitung Akurasi
+            let accuracy = total === 0 ? 0 : Math.round((correctCount / total) * 100);
+            document.getElementById('final-accuracy').innerText = `${accuracy}%`;
+        }
+
+        // Support Keyboard PC (Numpad)
+        document.addEventListener('keydown', (event) => {
+            // Hanya aktif jika game screen sedang aktif
+            if(document.getElementById('game-screen').classList.contains('active')) {
+                const key = event.key;
+                if (key >= '0' && key <= '9') {
+                    inputAnswer(parseInt(key));
+                }
+            }
+        });
+    </script>
+</body>
+</html>
