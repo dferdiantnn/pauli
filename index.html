@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Tes Koran Mobile Profesional</title>
+    <title>Tes Koran - dferdiantn</title>
     <style>
         :root {
             --bg-color: #FDFBF0;
@@ -13,211 +13,258 @@
             --text-dark: #333;
             --success: #28a745;
             --danger: #dc3545;
-            --info-bg: #e9f5ff; /* Warna background untuk info HR */
-            --highlight-bg: #fff3cd; /* Warna highlight instruksi */
+            --highlight-bg: #fff3cd;
         }
 
         * { box-sizing: border-box; }
 
         body {
-            font-family: 'Segoe UI', Roboto, "Helvetica Neue", Arial, sans-serif;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--bg-color);
             margin: 0;
             padding: 0;
             height: 100vh; 
-            overflow: hidden; /* Mencegah scroll saat main */
+            overflow: hidden;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
         }
 
         /* Container Utama */
         .container {
             width: 100%;
-            max-width: 480px; /* Sedikit diperlebar */
+            max-width: 480px;
             background-color: var(--bg-color);
             display: flex;
             flex-direction: column;
             height: 100%;
             padding: 20px;
-            overflow-y: auto; /* Allow scroll pada menu dan result */
+            overflow-y: auto; 
             -webkit-overflow-scrolling: touch;
+            margin: 0 auto;
+            position: relative;
         }
 
-        /* Mode Game Full Screen */
         .container.game-mode {
             padding: 0;
             max-width: 100%;
-            overflow: hidden; /* Kunci scroll saat game */
+            overflow: hidden; 
         }
 
         h1, h2, h3, h4 { color: var(--text-dark); margin: 0.5em 0; }
         h1 { color: #D9534F; }
 
-        .screen {
-            display: none;
-            flex-direction: column;
-            min-height: 100%; /* Ensure full height for centering */
-        }
-        
+        .screen { display: none; flex-direction: column; min-height: 100%; }
         .screen.active { display: flex; }
 
-        /* --- MENU SCREEN STYLES (NEW CARD LOOK) --- */
+        /* --- MENU STYLE --- */
         .menu-card {
             background: var(--card-bg);
             border: 2px solid #eee;
             border-radius: 20px;
-            padding: 25px;
+            padding: 20px;
             box-shadow: 0 8px 20px rgba(0,0,0,0.05);
-            margin: auto 0; /* Center vertically */
+            margin: auto 0;
         }
 
-        .instructions-box {
-            background-color: var(--highlight-bg);
-            border-left: 5px solid #ffc107;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 20px 0;
-            font-size: 1.1rem;
-            line-height: 1.5;
-            color: #555;
+        /* TABEL INSTRUKSI (Style Mirip Referensi User) */
+        .instruction-wrapper {
+            border: 2px solid #3D9E9E; /* Teal border like reference */
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 15px 0;
+            font-family: monospace; /* Font agak teknis */
         }
-        .instructions-box strong { color: #000; }
+        .instruction-header {
+            display: flex;
+            background-color: #2cbbad; /* Teal background */
+            color: white;
+            font-weight: bold;
+            text-align: center;
+            padding: 10px 0;
+        }
+        .col-op { flex: 2; border-right: 2px solid white; }
+        .col-res { flex: 1; }
+        
+        .instruction-row {
+            display: flex;
+            background-color: #fff9e6; /* Cream background */
+            padding: 10px 0;
+            border-bottom: 1px solid #e0e0e0;
+            align-items: center;
+            font-size: 1.1rem;
+            color: #333;
+        }
+        .instruction-row:last-child { border-bottom: none; }
+        .row-op { flex: 2; text-align: center; border-right: 2px solid #ddd; }
+        .row-res { flex: 1; text-align: center; font-weight: bold; }
+
+        /* Highlight box pink/merah muda untuk angka satuan */
+        .highlight-num {
+            background-color: #ffdce0;
+            color: #d32f2f;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
 
         .time-options {
             display: grid;
-            grid-template-columns: repeat(2, 1fr); /* 2 kolom */
-            gap: 12px;
-            margin-top: 25px;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 20px;
         }
 
         .btn {
-            border: none;
-            padding: 15px;
-            border-radius: 12px;
-            font-size: 16px; font-weight: 700;
-            cursor: pointer; color: white;
-            transition:all 0.2s;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border: none; padding: 15px; border-radius: 12px;
+            font-size: 16px; font-weight: 700; cursor: pointer; color: white;
+            transition: transform 0.1s; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
-        .btn:active { transform: scale(0.98); box-shadow: none; }
+        .btn:active { transform: scale(0.96); }
         .btn-teal { background-color: var(--primary-btn); }
         .btn-red { background-color: var(--keypad-btn); }
-        .btn-blue { background-color: #4A90E2; width: 100%; margin: 30px 0; padding: 18px; font-size: 18px;}
+        .btn-blue { background-color: #4A90E2; width: 100%; margin: 20px 0; padding: 18px; font-size: 18px;}
 
-        /* --- GAME SCREEN STYLES (VERTICAL LAYOUT) --- */
+        /* --- COUNTDOWN OVERLAY --- */
+        #countdown-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(253, 251, 240, 0.98); /* Hampir solid */
+            z-index: 9999;
+            display: none;
+            justify-content: center; align-items: center; flex-direction: column;
+        }
+        #countdown-text { 
+            font-size: 10rem; font-weight: 800; color: var(--keypad-btn); 
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        #countdown-label { font-size: 1.5rem; color: #555; margin-top: -20px; font-weight: bold;}
+
+        @keyframes popIn {
+            0% { transform: scale(0); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* --- GAME SCREEN --- */
         .game-header {
             padding: 15px 20px;
             display: flex; justify-content: space-between; align-items: center;
             font-size: 1.2rem; font-weight: bold;
             background: var(--bg-color); z-index: 2;
         }
-        .timer-box { background: #333; color: white; padding: 8px 15px; border-radius: 8px; }
-
+        .timer-box { background: #333; color: white; padding: 8px 15px; border-radius: 8px; width: 90px; text-align: center;}
+        
         .game-middle-area {
             flex-grow: 1; display: flex; justify-content: center; align-items: center;
             padding-bottom: 20px;
         }
-        /* Ubah jadi vertikal */
         .question-vertical {
-            font-size: 6rem; /* Angka lebih besar */
-            font-weight: 800;
-            color: var(--text-dark);
-            display: flex;
-            flex-direction: column; /* Atas bawah */
-            align-items: center;
-            line-height: 1;
+            font-size: 6rem; font-weight: 800; color: var(--text-dark);
+            display: flex; flex-direction: column; align-items: center; line-height: 1;
         }
         .operator { color: #aaa; font-size: 4rem; margin: -10px 0; }
 
-        /* Keypad Sticky Bottom */
         .keypad-container {
-            background: #fff;
-            padding: 15px 15px 30px 15px; /* Extra padding bottom for iOS home bar */
+            background: #fff; padding: 15px 15px 30px 15px;
             border-top-left-radius: 25px; border-top-right-radius: 25px;
-            box-shadow: 0 -5px 15px rgba(0,0,0,0.08);
-            z-index: 10;
+            box-shadow: 0 -5px 15px rgba(0,0,0,0.08); z-index: 10;
         }
         .keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-        .keypad .btn {
-            padding: 20px 0; font-size: 2.2rem; border-radius: 16px;
-            box-shadow: 0 3px 0px #c0392b; /* Efek tombol timbul */
-        }
-        .keypad .btn:active { box-shadow: 0 0px 0px #c0392b; transform: translateY(3px);}
+        .keypad .btn { padding: 20px 0; font-size: 2.2rem; border-radius: 16px; box-shadow: 0 4px 0px #c0392b; }
+        .keypad .btn:active { box-shadow: 0 0px 0px #c0392b; transform: translateY(4px);}
 
-        /* --- RESULT SCREEN STYLES & HR INSIGHTS --- */
+        /* --- RESULT SCREEN --- */
         .result-card {
             background: var(--card-bg); padding: 25px; border-radius: 20px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05); margin-bottom: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05); margin-bottom: 20px;
         }
-        .result-summary { text-align: center; margin-bottom: 30px; }
         .big-score { font-size: 4.5rem; color: var(--primary-btn); margin: 5px 0; line-height: 1;}
         
-        .stats-grid {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 30px;
-        }
-        .stat-box {
-            background: #f8f9fa; padding: 15px; border-radius: 12px; text-align: center;
-            border: 1px solid #eee;
-        }
-        .stat-val { font-size: 1.8rem; font-weight: bold; display: block; margin-top: 5px; }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .stat-box { background: #f8f9fa; padding: 12px; border-radius: 12px; text-align: center; border: 1px solid #eee; }
+        .stat-val { font-size: 1.4rem; font-weight: bold; display: block; margin-top: 5px; }
 
-        /* Graph Styles */
         .graph-container { margin-top: 15px; }
-        .graph-row { display: flex; align-items: center; margin-bottom: 15px; }
-        .graph-label { flex: 0 0 100px; font-size: 0.9rem; color: #666; }
-        .graph-track {
-            flex-grow: 1; height: 24px; background: #eee; border-radius: 12px; overflow: hidden; margin: 0 12px;
-        }
+        .graph-row { display: flex; align-items: center; margin-bottom: 10px; }
+        .graph-label { flex: 0 0 90px; font-size: 0.85rem; color: #666; }
+        .graph-track { flex-grow: 1; height: 18px; background: #eee; border-radius: 10px; overflow: hidden; margin: 0 10px; }
         .graph-bar { height: 100%; width: 0; transition: width 0.8s ease-out; }
-        .graph-count { flex: 0 0 30px; font-weight: bold; text-align: right; }
+        .graph-count { flex: 0 0 25px; font-weight: bold; text-align: right; font-size: 0.9rem; }
         .bg-green { background-color: var(--success); }
         .bg-yellow { background-color: #ffc107; }
         .bg-red { background-color: var(--danger); }
 
-        /* HR Insight Box */
-        .hr-insight-box {
-            background-color: var(--info-bg);
-            border-radius: 15px;
-            padding: 20px;
-            border: 1px solid #b8daff;
+        /* Personalized Analysis Box */
+        .analysis-box {
+            background-color: #e3f2fd;
+            border-left: 5px solid #2196f3;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
         }
-        .hr-insight-box h3 { color: #0056b3; margin-top: 0;}
-        .hr-insight-box ul { padding-left: 20px; margin-bottom: 0;}
-        .hr-insight-box li { margin-bottom: 10px; font-size: 0.95rem; color: #444;}
-        .hr-insight-box strong { color: #333; }
+        .analysis-title { font-weight: bold; color: #0d47a1; margin-bottom: 8px; display: block; font-size: 1.1rem;}
+        .analysis-text { color: #333; font-size: 0.95rem; line-height: 1.5; }
+
+        /* Footer Copyright */
+        .footer {
+            text-align: center;
+            font-size: 0.85rem;
+            color: #aaa;
+            padding: 20px;
+            margin-top: auto;
+            width: 100%;
+        }
 
     </style>
 </head>
 <body>
 
+    <div id="countdown-overlay">
+        <div id="countdown-text">3</div>
+        <div id="countdown-label">Persiapan...</div>
+    </div>
+
     <div class="container" id="main-container">
         
         <div id="menu-screen" class="screen active">
             <div class="menu-card">
-                <div style="text-align: center; margin-bottom: 20px;">
-                     <h1>Tes Koran / Pauli</h1>
-                     <p style="color: #777; margin-top: 5px;">Simulasi Psikotes Kerja & CPNS</p>
+                <div style="text-align: center; margin-bottom: 10px;">
+                     <h1>Tes Koran</h1>
+                     <p style="color: #777; margin-top: 0px;">Simulasi Pauli & Kraepelin</p>
                 </div>
 
-                <div class="instructions-box">
-                    <div style="display: flex; align-items: center; margin-bottom: 10px;">
-                        <span style="font-size: 1.5rem; margin-right: 10px;">💡</span>
-                        <h3 style="margin:0;">Cara Pengerjaan</h3>
+                <p style="margin-bottom: 5px; font-weight: bold; color: #555;">Cara Pengerjaan:</p>
+                <div class="instruction-wrapper">
+                    <div class="instruction-header">
+                        <div class="col-op">operasi</div>
+                        <div class="col-res">hasil</div>
                     </div>
-                    <p>Jumlahkan dua angka yang muncul. Ketik HANYA <strong>angka satuannya</strong> (digit terakhir).</p>
-                    <p style="margin-bottom: 0; font-style: italic; color: #666;">Contoh: 8 + 9 = 17. Maka ketik angka <strong>7</strong>.</p>
+                    <div class="instruction-row">
+                        <div class="row-op">1 + 7 = <span class="highlight-num">8</span></div>
+                        <div class="row-res">8</div>
+                    </div>
+                    <div class="instruction-row">
+                        <div class="row-op">6 + 4 = 1<span class="highlight-num">0</span></div>
+                        <div class="row-res">0</div>
+                    </div>
+                    <div class="instruction-row">
+                        <div class="row-op">8 + 9 = 1<span class="highlight-num">7</span></div>
+                        <div class="row-res">7</div>
+                    </div>
                 </div>
                 
-                <h4 style="text-align: center; margin-top: 25px;">Pilih Durasi Tes</h4>
+                <h4 style="text-align: center; margin-top: 25px; color: #333;">Pilih Durasi Tes</h4>
                 <div class="time-options">
-                    <button class="btn btn-teal" onclick="startGame(60)">1 Menit</button>
-                    <button class="btn btn-teal" onclick="startGame(120)">2 Menit</button>
-                    <button class="btn btn-teal" onclick="startGame(300)">5 Menit</button>
-                    <button class="btn btn-teal" onclick="startGame(600)">10 Menit</button>
-                    <button class="btn btn-red" onclick="startGame(900)">15 Menit</button>
-                    <button class="btn btn-red" onclick="startGame(1800)">30 Menit</button>
+                    <button class="btn btn-teal" onclick="initGame(60)">1 Menit</button>
+                    <button class="btn btn-teal" onclick="initGame(120)">2 Menit</button>
+                    <button class="btn btn-teal" onclick="initGame(300)">5 Menit</button>
+                    <button class="btn btn-teal" onclick="initGame(600)">10 Menit</button>
+                    <button class="btn btn-red" onclick="initGame(1800)">30 Menit</button>
+                    <button class="btn btn-red" onclick="initGame(3600)">60 Menit</button>
                 </div>
             </div>
+            
+            <footer class="footer">
+                &copy; <span id="year"></span> dferdiantn
+            </footer>
         </div>
 
         <div id="game-screen" class="screen">
@@ -226,7 +273,7 @@
                     <span style="color: var(--success); margin-right: 15px;">✔ <span id="live-correct">0</span></span>
                     <span style="color: var(--danger);">✖ <span id="live-wrong">0</span></span>
                 </div>
-                <span class="timer-box" id="timer">00:00</span>
+                <span class="timer-box" id="timer">--:--</span>
             </div>
             
             <div class="game-middle-area">
@@ -248,14 +295,16 @@
                     <button class="btn btn-red" onclick="inputAnswer(7)">7</button>
                     <button class="btn btn-red" onclick="inputAnswer(8)">8</button>
                     <button class="btn btn-red" onclick="inputAnswer(9)">9</button>
-                    <button class="btn btn-red" style="opacity: 0; pointer-events: none;"> </button> <button class="btn btn-red" onclick="inputAnswer(0)">0</button>
-                    <button class="btn btn-red" style="opacity: 0; pointer-events: none;"> </button> </div>
+                    <button class="btn btn-red" style="opacity: 0; pointer-events: none;"> </button>
+                    <button class="btn btn-red" onclick="inputAnswer(0)">0</button>
+                    <button class="btn btn-red" style="opacity: 0; pointer-events: none;"> </button>
+                </div>
             </div>
         </div>
 
         <div id="result-screen" class="screen" style="padding-top: 20px;">
             <div class="result-card">
-                <div class="result-summary">
+                <div style="text-align: center; margin-bottom: 20px;">
                     <h2>Hasil Tes</h2>
                     <h1 class="big-score" id="final-accuracy">0%</h1>
                     <p style="color:#777; margin:0;">Akurasi Jawaban</p>
@@ -276,80 +325,139 @@
                     </div>
                      <div class="stat-box">
                         <span>Rata-rata</span>
-                        <span class="stat-val" style="font-size: 1.3rem;"><span id="avg-speed">0</span>s /soal</span>
+                        <span class="stat-val" style="font-size: 1.2rem;"><span id="avg-speed">0</span>s /soal</span>
                     </div>
                 </div>
 
-                <h3>Analisis Kecepatan</h3>
+                <h3 style="margin-top:20px; font-size: 1rem;">Distribusi Kecepatan</h3>
                 <div class="graph-container">
                     <div class="graph-row">
-                        <div class="graph-label">Cepat (<1.5d)</div>
+                        <div class="graph-label">Cepat (<1.5s)</div>
                         <div class="graph-track"><div id="bar-fast" class="graph-bar bg-green"></div></div>
                         <div id="count-fast" class="graph-count">0</div>
                     </div>
-                     <div class="graph-row">
-                        <div class="graph-label">Sedang (1.5-3d)</div>
+                    <div class="graph-row">
+                        <div class="graph-label">Sedang (1.5-3s)</div>
                         <div class="graph-track"><div id="bar-medium" class="graph-bar bg-yellow"></div></div>
                         <div id="count-medium" class="graph-count">0</div>
                     </div>
-                     <div class="graph-row">
-                        <div class="graph-label">Lambat (>3d)</div>
+                    <div class="graph-row">
+                        <div class="graph-label">Lambat (>3s)</div>
                         <div class="graph-track"><div id="bar-slow" class="graph-bar bg-red"></div></div>
                         <div id="count-slow" class="graph-count">0</div>
                     </div>
                 </div>
-            </div>
 
-            <div class="hr-insight-box">
-                <h3>📋 Interpretasi Perspektif HR</h3>
-                <p>Tes ini umumnya mengukur ketahanan, kecepatan, dan ketelitian kerja.</p>
-                <ul>
-                    <li><strong>Dominan Cepat (<1.5s):</strong> Menunjukkan ritme kerja yang sangat cepat dan sigap. Perlu diperhatikan apakah akurasinya tetap tinggi.</li>
-                    <li><strong>Dominan Sedang (1.5s - 3s):</strong> Menunjukkan keseimbangan yang baik antara kecepatan dan kehati-hatian. Ritme kerja stabil.</li>
-                    <li><strong>Dominan Lambat (>3s):</strong> Cenderung sangat berhati-hati dan teliti, namun mungkin membutuhkan waktu lebih lama dalam menyelesaikan tugas bertekanan tinggi.</li>
-                    <li><strong>Banyak Salah:</strong> Indikasi konsentrasi yang mudah terpecah atau kelelahan mental saat di bawah tekanan waktu.</li>
-                </ul>
+                <div class="analysis-box">
+                    <span class="analysis-title" id="ai-title">🤖 Analisis Performa</span>
+                    <p class="analysis-text" id="ai-desc">
+                        Menghitung data permainan...
+                    </p>
+                </div>
             </div>
 
             <button class="btn btn-blue" onclick="location.reload()">Ulangi Tes</button>
+            
+            <footer class="footer">
+                &copy; <span id="year-res"></span> dferdiantn
+            </footer>
         </div>
     </div>
 
     <script>
-        // --- LOGIC JAVASCRIPT (Tidak ada perubahan besar, hanya penyesuaian) ---
-        let timeLimit = 60; let totalTimePlayed = 0;
-        let timerInterval;
-        let correctCount = 0; let wrongCount = 0;
-        let currentNum1 = 0; let currentNum2 = 0; let correctAnswer = 0;
-        let questionStartTime;
-        let speedStats = { fast: 0, medium: 0, slow: 0 }; // <1.5s, 1.5-3s, >3s
+        // --- SETUP TAHUN OTOMATIS ---
+        const currentYear = new Date().getFullYear();
+        document.getElementById('year').innerText = currentYear;
+        document.getElementById('year-res').innerText = currentYear;
 
-        function startGame(seconds) {
+        // --- VARIABLES ---
+        let selectedDuration = 60;
+        let timeLimit = 60; 
+        let totalTimePlayed = 0;
+        let timerInterval;
+        let correctCount = 0; 
+        let wrongCount = 0;
+        let currentNum1 = 0; 
+        let currentNum2 = 0; 
+        let correctAnswer = 0;
+        
+        // Timer Logic Variables
+        let questionStartTime;
+        let hasStartedPlaying = false; // Flag untuk menunggu input pertama
+        let speedStats = { fast: 0, medium: 0, slow: 0 };
+
+        // 1. INIT GAME (TRIGGER COUNTDOWN)
+        function initGame(seconds) {
+            selectedDuration = seconds;
             timeLimit = seconds;
-            totalTimePlayed = seconds;
+            
+            // Tampilkan Countdown Overlay
+            const overlay = document.getElementById('countdown-overlay');
+            const countText = document.getElementById('countdown-text');
+            overlay.style.display = 'flex';
+            
+            let prepTime = 3;
+            countText.innerText = prepTime;
+            
+            const prepInterval = setInterval(() => {
+                prepTime--;
+                if (prepTime > 0) {
+                    countText.innerText = prepTime;
+                    // Reset animation
+                    countText.style.animation = 'none';
+                    countText.offsetHeight; /* trigger reflow */
+                    countText.style.animation = 'popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+                } else {
+                    clearInterval(prepInterval);
+                    overlay.style.display = 'none';
+                    startGameLogic();
+                }
+            }, 1000);
+        }
+
+        // 2. START GAME (SHOW SCREEN, BUT WAIT FOR INPUT)
+        function startGameLogic() {
+            // Reset Stats
             correctCount = 0; wrongCount = 0;
             speedStats = { fast: 0, medium: 0, slow: 0 };
             updateLiveScore();
-
-            // Mode Full Screen
+            hasStartedPlaying = false; // Belum mulai hitung mundur
+            
+            // UI Switch
             document.getElementById('main-container').classList.add('game-mode');
             document.getElementById('menu-screen').classList.remove('active');
             document.getElementById('game-screen').classList.add('active');
             
+            // Tampilkan waktu awal (belum jalan)
+            updateTimerDisplay(); 
+            
+            // Generate Soal Pertama
             generateQuestion();
-            startTimer();
         }
 
+        // 3. GENERATE RANDOM QUESTION
         function generateQuestion() {
+            // Random murni setiap pemanggilan
             currentNum1 = Math.floor(Math.random() * 10); 
             currentNum2 = Math.floor(Math.random() * 10);
+            
             document.getElementById('num1').innerText = currentNum1;
             document.getElementById('num2').innerText = currentNum2;
             correctAnswer = (currentNum1 + currentNum2) % 10; 
+            
+            // Reset waktu jawab per soal
             questionStartTime = Date.now();
         }
 
+        // 4. INPUT HANDLER & SMART TIMER START
         function inputAnswer(userVal) {
+            // Cek apakah ini input pertama? Jika ya, jalankan timer utama
+            if (!hasStartedPlaying) {
+                hasStartedPlaying = true;
+                startMainTimer();
+            }
+
+            // Hitung durasi jawab soal ini
             let timeTaken = (Date.now() - questionStartTime) / 1000; 
             if(timeTaken < 1.5) speedStats.fast++;
             else if(timeTaken < 3.0) speedStats.medium++;
@@ -367,8 +475,7 @@
             document.getElementById('live-wrong').innerText = wrongCount;
         }
 
-        function startTimer() {
-            updateTimerDisplay();
+        function startMainTimer() {
             timerInterval = setInterval(() => {
                 timeLimit--;
                 updateTimerDisplay();
@@ -383,42 +490,94 @@
                 `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
         }
 
+        // 5. END GAME & AI ANALYSIS
         function endGame() {
             clearInterval(timerInterval);
-            // Kembali ke mode normal (bisa scroll)
             document.getElementById('main-container').classList.remove('game-mode');
             document.getElementById('game-screen').classList.remove('active');
             document.getElementById('result-screen').classList.add('active');
-            // Scroll otomatis ke atas hasil
             document.getElementById('main-container').scrollTop = 0;
 
-
-            // --- Populate Data ---
+            // Stats Calculation
             let total = correctCount + wrongCount;
+            let accuracy = total === 0 ? 0 : Math.round((correctCount / total) * 100);
+            let avgSpeed = total === 0 ? 0 : (selectedDuration / total).toFixed(2);
+            
+            // Populate DOM
             document.getElementById('final-correct').innerText = correctCount;
             document.getElementById('final-wrong').innerText = wrongCount;
             document.getElementById('final-total').innerText = total;
-            
-            let accuracy = total === 0 ? 0 : Math.round((correctCount / total) * 100);
             document.getElementById('final-accuracy').innerText = `${accuracy}%`;
-
-            let avgSpeed = total === 0 ? 0 : (totalTimePlayed / total).toFixed(2);
             document.getElementById('avg-speed').innerText = avgSpeed;
 
-            // --- Render Grafik ---
+            // Render Graphs
             setTimeout(() => {
                 let fastPct = total === 0 ? 0 : (speedStats.fast / total) * 100;
+                let medPct = total === 0 ? 0 : (speedStats.medium / total) * 100;
+                let slowPct = total === 0 ? 0 : (speedStats.slow / total) * 100;
+                
                 document.getElementById('bar-fast').style.width = `${fastPct}%`;
                 document.getElementById('count-fast').innerText = speedStats.fast;
-
-                let mediumPct = total === 0 ? 0 : (speedStats.medium / total) * 100;
-                document.getElementById('bar-medium').style.width = `${mediumPct}%`;
+                document.getElementById('bar-medium').style.width = `${medPct}%`;
                 document.getElementById('count-medium').innerText = speedStats.medium;
-
-                let slowPct = total === 0 ? 0 : (speedStats.slow / total) * 100;
                 document.getElementById('bar-slow').style.width = `${slowPct}%`;
                 document.getElementById('count-slow').innerText = speedStats.slow;
             }, 100);
+
+            // --- AI INTERPRETATION LOGIC (OLAH SENDIRI) ---
+            generateAnalysis(accuracy, avgSpeed, total);
+        }
+
+        function generateAnalysis(acc, speed, total) {
+            const titleEl = document.getElementById('ai-title');
+            const descEl = document.getElementById('ai-desc');
+            
+            let title = "";
+            let desc = "";
+
+            // Jika tidak mengerjakan
+            if (total === 0) {
+                titleEl.innerText = "😴 Tidak Ada Aktivitas";
+                descEl.innerText = "Anda belum mengerjakan soal sama sekali.";
+                return;
+            }
+
+            // Logika Klasifikasi
+            // Speed (detik/soal): < 1.8 (Cepat), 1.8 - 3.0 (Sedang), > 3.0 (Lambat)
+            let speedCategory = speed < 1.8 ? "FAST" : (speed <= 3.0 ? "MODERATE" : "SLOW");
+            let accCategory = acc >= 90 ? "HIGH" : (acc >= 75 ? "MID" : "LOW");
+
+            if (speedCategory === "FAST") {
+                if (accCategory === "HIGH") {
+                    title = "🚀 Tipe Superior (Cepat & Teliti)";
+                    desc = "Luar biasa! Anda memiliki kemampuan fokus tinggi. Anda bisa bekerja sangat cepat tanpa mengorbankan ketelitian. Pertahankan konsistensi ini.";
+                } else if (accCategory === "MID") {
+                    title = "⚡ Tipe Agresif";
+                    desc = "Anda bekerja sangat cepat, namun mulai sedikit ceroboh. Cobalah sedikit turunkan tempo agar akurasi bisa kembali sempurna.";
+                } else {
+                    title = "⚠️ Tipe Terburu-buru (Impulsif)";
+                    desc = "Anda terlalu mengejar kuantitas sehingga banyak melakukan kesalahan. Ingat, kecepatan tanpa akurasi tidak bernilai. Tenang sedikit!";
+                }
+            } else if (speedCategory === "MODERATE") {
+                if (accCategory === "HIGH") {
+                    title = "🛡️ Tipe Stabil (Ideal)";
+                    desc = "Performa yang sangat seimbang. Anda bukan yang tercepat, tapi hasil kerja Anda sangat bisa diandalkan dan minim revisi. Ini tipe yang disukai banyak perusahaan.";
+                } else {
+                    title = "⚖️ Tipe Rata-rata";
+                    desc = "Kecepatan dan ketelitian Anda standar. Untuk hasil yang lebih baik, cobalah latihan fokus untuk mengurangi kesalahan kecil.";
+                }
+            } else { // SLOW
+                if (accCategory === "HIGH") {
+                    title = "🐢 Tipe Perfeksionis / Hati-hati";
+                    desc = "Anda sangat mengutamakan kebenaran jawaban sehingga butuh waktu lama berpikir. Cobalah lebih percaya diri agar bisa bekerja lebih efisien.";
+                } else {
+                    title = "💤 Tipe Kurang Fokus / Lelah";
+                    desc = "Kecepatan rendah dan banyak kesalahan menandakan Anda mungkin sedang lelah, mengantuk, atau kehilangan konsentrasi. Istirahatlah sejenak.";
+                }
+            }
+
+            titleEl.innerText = title;
+            descEl.innerText = desc;
         }
     </script>
 </body>
