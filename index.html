@@ -3,166 +3,188 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Tes Koran Mobile</title>
+    <title>Tes Koran Mobile Profesional</title>
     <style>
         :root {
             --bg-color: #FDFBF0;
+            --card-bg: #FFFFFF;
             --primary-btn: #3D9E9E;
             --keypad-btn: #E05D5D;
             --text-dark: #333;
             --success: #28a745;
             --danger: #dc3545;
+            --info-bg: #e9f5ff; /* Warna background untuk info HR */
+            --highlight-bg: #fff3cd; /* Warna highlight instruksi */
         }
 
         * { box-sizing: border-box; }
 
         body {
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: 'Segoe UI', Roboto, "Helvetica Neue", Arial, sans-serif;
             background-color: var(--bg-color);
             margin: 0;
             padding: 0;
-            /* Mencegah scroll saat main di HP */
             height: 100vh; 
-            overflow: hidden;
+            overflow: hidden; /* Mencegah scroll saat main */
             display: flex;
             justify-content: center;
         }
 
-        /* Container Utama - Default Mode (Menu & Result) */
+        /* Container Utama */
         .container {
             width: 100%;
-            max-width: 450px;
+            max-width: 480px; /* Sedikit diperlebar */
             background-color: var(--bg-color);
             display: flex;
             flex-direction: column;
             height: 100%;
             padding: 20px;
-            overflow-y: auto; /* Allow scroll on result screen if needed */
+            overflow-y: auto; /* Allow scroll pada menu dan result */
+            -webkit-overflow-scrolling: touch;
         }
 
-        /* Container Mode Game - Full Screen tanpa padding */
+        /* Mode Game Full Screen */
         .container.game-mode {
             padding: 0;
             max-width: 100%;
+            overflow: hidden; /* Kunci scroll saat game */
         }
 
-        h1, h2, h3 { color: var(--text-dark); margin: 0.5em 0; }
+        h1, h2, h3, h4 { color: var(--text-dark); margin: 0.5em 0; }
         h1 { color: #D9534F; }
 
         .screen {
             display: none;
             flex-direction: column;
-            height: 100%;
+            min-height: 100%; /* Ensure full height for centering */
         }
         
         .screen.active { display: flex; }
 
-        /* --- MENU SCREEN STYLES --- */
+        /* --- MENU SCREEN STYLES (NEW CARD LOOK) --- */
+        .menu-card {
+            background: var(--card-bg);
+            border: 2px solid #eee;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            margin: auto 0; /* Center vertically */
+        }
+
+        .instructions-box {
+            background-color: var(--highlight-bg);
+            border-left: 5px solid #ffc107;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-size: 1.1rem;
+            line-height: 1.5;
+            color: #555;
+        }
+        .instructions-box strong { color: #000; }
+
         .time-options {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            margin-top: 30px;
+            grid-template-columns: repeat(2, 1fr); /* 2 kolom */
+            gap: 12px;
+            margin-top: 25px;
         }
 
         .btn {
             border: none;
             padding: 15px;
             border-radius: 12px;
-            font-size: 18px;
-            font-weight: 600;
-            cursor: pointer;
-            color: white;
-            transition: opacity 0.1s;
+            font-size: 16px; font-weight: 700;
+            cursor: pointer; color: white;
+            transition:all 0.2s;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
-        .btn:active { opacity: 0.8; transform: translateY(2px); box-shadow: none; }
+        .btn:active { transform: scale(0.98); box-shadow: none; }
         .btn-teal { background-color: var(--primary-btn); }
         .btn-red { background-color: var(--keypad-btn); }
-        .btn-blue { background-color: #4A90E2; width: 100%; margin-top: auto; margin-bottom: 20px; padding: 20px; }
+        .btn-blue { background-color: #4A90E2; width: 100%; margin: 30px 0; padding: 18px; font-size: 18px;}
 
-        /* --- GAME SCREEN STYLES --- */
-        /* Header Game: Live Score & Timer */
+        /* --- GAME SCREEN STYLES (VERTICAL LAYOUT) --- */
         .game-header {
-            padding: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 1.2rem;
-            font-weight: bold;
+            padding: 15px 20px;
+            display: flex; justify-content: space-between; align-items: center;
+            font-size: 1.2rem; font-weight: bold;
+            background: var(--bg-color); z-index: 2;
         }
-        .timer-box {
-            background: #333; color: white; padding: 8px 15px; border-radius: 8px;
-        }
+        .timer-box { background: #333; color: white; padding: 8px 15px; border-radius: 8px; }
 
-        /* Area Soal: Tengah-tengah */
         .game-middle-area {
-            flex-grow: 1; /* Mengambil sisa ruang tengah */
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            flex-grow: 1; display: flex; justify-content: center; align-items: center;
+            padding-bottom: 20px;
         }
-        .question-horizontal {
-            font-size: 5rem;
+        /* Ubah jadi vertikal */
+        .question-vertical {
+            font-size: 6rem; /* Angka lebih besar */
             font-weight: 800;
             color: var(--text-dark);
             display: flex;
+            flex-direction: column; /* Atas bawah */
             align-items: center;
-            gap: 15px;
+            line-height: 1;
         }
-        .operator { color: #aaa; font-size: 4rem; }
+        .operator { color: #aaa; font-size: 4rem; margin: -10px 0; }
 
-        /* Keypad: Mentok Bawah */
+        /* Keypad Sticky Bottom */
         .keypad-container {
-            background: #fff; /* Sedikit beda warna biar kontras */
-            padding: 15px 15px 25px 15px; /* Padding bawah lebih besar untuk HP berponi/gestur */
-            border-top-left-radius: 25px;
-            border-top-right-radius: 25px;
-            box-shadow: 0 -5px 15px rgba(0,0,0,0.05);
+            background: #fff;
+            padding: 15px 15px 30px 15px; /* Extra padding bottom for iOS home bar */
+            border-top-left-radius: 25px; border-top-right-radius: 25px;
+            box-shadow: 0 -5px 15px rgba(0,0,0,0.08);
+            z-index: 10;
         }
-        .keypad {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-        }
+        .keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
         .keypad .btn {
-            padding: 22px 0; /* Tombol lebih tinggi, enak buat jempol */
-            font-size: 2rem;
-            border-radius: 15px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            padding: 20px 0; font-size: 2.2rem; border-radius: 16px;
+            box-shadow: 0 3px 0px #c0392b; /* Efek tombol timbul */
         }
+        .keypad .btn:active { box-shadow: 0 0px 0px #c0392b; transform: translateY(3px);}
 
-        /* --- RESULT SCREEN STYLES --- */
-        .result-summary {
-            text-align: center; margin-bottom: 20px;
+        /* --- RESULT SCREEN STYLES & HR INSIGHTS --- */
+        .result-card {
+            background: var(--card-bg); padding: 25px; border-radius: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05); margin-bottom: 25px;
         }
-        .big-score { font-size: 4rem; color: var(--primary-btn); margin: 10px 0; }
+        .result-summary { text-align: center; margin-bottom: 30px; }
+        .big-score { font-size: 4.5rem; color: var(--primary-btn); margin: 5px 0; line-height: 1;}
         
         .stats-grid {
             display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 30px;
         }
         .stat-box {
-            background: white; padding: 15px; border-radius: 12px; text-align: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            background: #f8f9fa; padding: 15px; border-radius: 12px; text-align: center;
+            border: 1px solid #eee;
         }
         .stat-val { font-size: 1.8rem; font-weight: bold; display: block; margin-top: 5px; }
 
-        /* Simple Bar Graph Styles */
-        .graph-container {
-            background: white; padding: 20px; border-radius: 15px; margin-bottom: 20px;
-        }
-        .graph-row {
-            display: flex; align-items: center; margin-bottom: 12px;
-        }
-        .graph-label { flex: 0 0 90px; font-size: 0.9rem; color: #666; }
+        /* Graph Styles */
+        .graph-container { margin-top: 15px; }
+        .graph-row { display: flex; align-items: center; margin-bottom: 15px; }
+        .graph-label { flex: 0 0 100px; font-size: 0.9rem; color: #666; }
         .graph-track {
-            flex-grow: 1; height: 20px; background: #eee; border-radius: 10px; overflow: hidden; margin: 0 10px;
+            flex-grow: 1; height: 24px; background: #eee; border-radius: 12px; overflow: hidden; margin: 0 12px;
         }
-        .graph-bar { height: 100%; transition: width 1s ease-out; width: 0; }
+        .graph-bar { height: 100%; width: 0; transition: width 0.8s ease-out; }
         .graph-count { flex: 0 0 30px; font-weight: bold; text-align: right; }
         .bg-green { background-color: var(--success); }
         .bg-yellow { background-color: #ffc107; }
         .bg-red { background-color: var(--danger); }
+
+        /* HR Insight Box */
+        .hr-insight-box {
+            background-color: var(--info-bg);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid #b8daff;
+        }
+        .hr-insight-box h3 { color: #0056b3; margin-top: 0;}
+        .hr-insight-box ul { padding-left: 20px; margin-bottom: 0;}
+        .hr-insight-box li { margin-bottom: 10px; font-size: 0.95rem; color: #444;}
+        .hr-insight-box strong { color: #333; }
 
     </style>
 </head>
@@ -171,16 +193,29 @@
     <div class="container" id="main-container">
         
         <div id="menu-screen" class="screen active">
-            <div style="flex-grow: 1; display: flex; flex-direction: column; justify-content: center;">
-                <h1>Tes Koran</h1>
-                <p>Latihan fokus dan kecepatan hitung.</p>
-                <p style="color: #666;">Jumlahkan dua angka, ketik <strong>satuan</strong>-nya saja.<br>Contoh: 8 + 9 = 17 (Ketik 7)</p>
+            <div class="menu-card">
+                <div style="text-align: center; margin-bottom: 20px;">
+                     <h1>Tes Koran / Pauli</h1>
+                     <p style="color: #777; margin-top: 5px;">Simulasi Psikotes Kerja & CPNS</p>
+                </div>
+
+                <div class="instructions-box">
+                    <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                        <span style="font-size: 1.5rem; margin-right: 10px;">💡</span>
+                        <h3 style="margin:0;">Cara Pengerjaan</h3>
+                    </div>
+                    <p>Jumlahkan dua angka yang muncul. Ketik HANYA <strong>angka satuannya</strong> (digit terakhir).</p>
+                    <p style="margin-bottom: 0; font-style: italic; color: #666;">Contoh: 8 + 9 = 17. Maka ketik angka <strong>7</strong>.</p>
+                </div>
                 
+                <h4 style="text-align: center; margin-top: 25px;">Pilih Durasi Tes</h4>
                 <div class="time-options">
                     <button class="btn btn-teal" onclick="startGame(60)">1 Menit</button>
                     <button class="btn btn-teal" onclick="startGame(120)">2 Menit</button>
                     <button class="btn btn-teal" onclick="startGame(300)">5 Menit</button>
-                    <button class="btn btn-red" onclick="startGame(600)">10 Menit</button>
+                    <button class="btn btn-teal" onclick="startGame(600)">10 Menit</button>
+                    <button class="btn btn-red" onclick="startGame(900)">15 Menit</button>
+                    <button class="btn btn-red" onclick="startGame(1800)">30 Menit</button>
                 </div>
             </div>
         </div>
@@ -188,14 +223,14 @@
         <div id="game-screen" class="screen">
             <div class="game-header">
                 <div>
-                    <span style="color: var(--success);">✔ <span id="live-correct">0</span></span>
-                    <span style="color: var(--danger); margin-left: 15px;">✖ <span id="live-wrong">0</span></span>
+                    <span style="color: var(--success); margin-right: 15px;">✔ <span id="live-correct">0</span></span>
+                    <span style="color: var(--danger);">✖ <span id="live-wrong">0</span></span>
                 </div>
                 <span class="timer-box" id="timer">00:00</span>
             </div>
             
             <div class="game-middle-area">
-                <div class="question-horizontal">
+                <div class="question-vertical">
                     <div id="num1">0</div>
                     <div class="operator">+</div>
                     <div id="num2">0</div>
@@ -218,49 +253,62 @@
             </div>
         </div>
 
-        <div id="result-screen" class="screen">
-            <div class="result-summary">
-                <h2>Selesai!</h2>
-                <h1 class="big-score" id="final-accuracy">0%</h1>
-                <p>Akurasi Jawaban</p>
+        <div id="result-screen" class="screen" style="padding-top: 20px;">
+            <div class="result-card">
+                <div class="result-summary">
+                    <h2>Hasil Tes</h2>
+                    <h1 class="big-score" id="final-accuracy">0%</h1>
+                    <p style="color:#777; margin:0;">Akurasi Jawaban</p>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <span style="color: var(--success);">✔ Benar</span>
+                        <span class="stat-val" id="final-correct">0</span>
+                    </div>
+                    <div class="stat-box">
+                        <span style="color: var(--danger);">✖ Salah</span>
+                        <span class="stat-val" id="final-wrong">0</span>
+                    </div>
+                    <div class="stat-box">
+                        <span>Total Soal</span>
+                        <span class="stat-val" id="final-total">0</span>
+                    </div>
+                     <div class="stat-box">
+                        <span>Rata-rata</span>
+                        <span class="stat-val" style="font-size: 1.3rem;"><span id="avg-speed">0</span>s /soal</span>
+                    </div>
+                </div>
+
+                <h3>Analisis Kecepatan</h3>
+                <div class="graph-container">
+                    <div class="graph-row">
+                        <div class="graph-label">Cepat (<1.5d)</div>
+                        <div class="graph-track"><div id="bar-fast" class="graph-bar bg-green"></div></div>
+                        <div id="count-fast" class="graph-count">0</div>
+                    </div>
+                     <div class="graph-row">
+                        <div class="graph-label">Sedang (1.5-3d)</div>
+                        <div class="graph-track"><div id="bar-medium" class="graph-bar bg-yellow"></div></div>
+                        <div id="count-medium" class="graph-count">0</div>
+                    </div>
+                     <div class="graph-row">
+                        <div class="graph-label">Lambat (>3d)</div>
+                        <div class="graph-track"><div id="bar-slow" class="graph-bar bg-red"></div></div>
+                        <div id="count-slow" class="graph-count">0</div>
+                    </div>
+                </div>
             </div>
 
-            <div class="stats-grid">
-                <div class="stat-box">
-                    <span style="color: var(--success);">✔ Benar</span>
-                    <span class="stat-val" id="final-correct">0</span>
-                </div>
-                <div class="stat-box">
-                    <span style="color: var(--danger);">✖ Salah</span>
-                    <span class="stat-val" id="final-wrong">0</span>
-                </div>
-                <div class="stat-box">
-                    <span>Total Soal</span>
-                    <span class="stat-val" id="final-total">0</span>
-                </div>
-                 <div class="stat-box">
-                    <span>Rata-rata</span>
-                    <span class="stat-val" style="font-size: 1.2rem;"><span id="avg-speed">0</span>s /soal</span>
-                </div>
-            </div>
-
-            <h3>Analisis Kecepatan</h3>
-            <div class="graph-container">
-                <div class="graph-row">
-                    <div class="graph-label">Cepat (<1.5d)</div>
-                    <div class="graph-track"><div id="bar-fast" class="graph-bar bg-green"></div></div>
-                    <div id="count-fast" class="graph-count">0</div>
-                </div>
-                 <div class="graph-row">
-                    <div class="graph-label">Sedang (1.5-3d)</div>
-                    <div class="graph-track"><div id="bar-medium" class="graph-bar bg-yellow"></div></div>
-                    <div id="count-medium" class="graph-count">0</div>
-                </div>
-                 <div class="graph-row">
-                    <div class="graph-label">Lambat (>3d)</div>
-                    <div class="graph-track"><div id="bar-slow" class="graph-bar bg-red"></div></div>
-                    <div id="count-slow" class="graph-count">0</div>
-                </div>
+            <div class="hr-insight-box">
+                <h3>📋 Interpretasi Perspektif HR</h3>
+                <p>Tes ini umumnya mengukur ketahanan, kecepatan, dan ketelitian kerja.</p>
+                <ul>
+                    <li><strong>Dominan Cepat (<1.5s):</strong> Menunjukkan ritme kerja yang sangat cepat dan sigap. Perlu diperhatikan apakah akurasinya tetap tinggi.</li>
+                    <li><strong>Dominan Sedang (1.5s - 3s):</strong> Menunjukkan keseimbangan yang baik antara kecepatan dan kehati-hatian. Ritme kerja stabil.</li>
+                    <li><strong>Dominan Lambat (>3s):</strong> Cenderung sangat berhati-hati dan teliti, namun mungkin membutuhkan waktu lebih lama dalam menyelesaikan tugas bertekanan tinggi.</li>
+                    <li><strong>Banyak Salah:</strong> Indikasi konsentrasi yang mudah terpecah atau kelelahan mental saat di bawah tekanan waktu.</li>
+                </ul>
             </div>
 
             <button class="btn btn-blue" onclick="location.reload()">Ulangi Tes</button>
@@ -268,13 +316,11 @@
     </div>
 
     <script>
-        // --- LOGIC JAVASCRIPT ---
+        // --- LOGIC JAVASCRIPT (Tidak ada perubahan besar, hanya penyesuaian) ---
         let timeLimit = 60; let totalTimePlayed = 0;
         let timerInterval;
         let correctCount = 0; let wrongCount = 0;
         let currentNum1 = 0; let currentNum2 = 0; let correctAnswer = 0;
-        
-        // Variabel untuk Analisis Kecepatan
         let questionStartTime;
         let speedStats = { fast: 0, medium: 0, slow: 0 }; // <1.5s, 1.5-3s, >3s
 
@@ -285,7 +331,7 @@
             speedStats = { fast: 0, medium: 0, slow: 0 };
             updateLiveScore();
 
-            // Ubah tampilan container jadi mode game (full screen)
+            // Mode Full Screen
             document.getElementById('main-container').classList.add('game-mode');
             document.getElementById('menu-screen').classList.remove('active');
             document.getElementById('game-screen').classList.add('active');
@@ -300,23 +346,18 @@
             document.getElementById('num1').innerText = currentNum1;
             document.getElementById('num2').innerText = currentNum2;
             correctAnswer = (currentNum1 + currentNum2) % 10; 
-
-            // Catat waktu mulai soal ini
             questionStartTime = Date.now();
         }
 
         function inputAnswer(userVal) {
-            // Hitung kecepatan menjawab soal ini
-            let timeTaken = (Date.now() - questionStartTime) / 1000; // dalam detik
+            let timeTaken = (Date.now() - questionStartTime) / 1000; 
             if(timeTaken < 1.5) speedStats.fast++;
             else if(timeTaken < 3.0) speedStats.medium++;
             else speedStats.slow++;
 
-            if (userVal === correctAnswer) {
-                correctCount++;
-            } else {
-                wrongCount++;
-            }
+            if (userVal === correctAnswer) correctCount++;
+            else wrongCount++;
+
             updateLiveScore();
             generateQuestion();
         }
@@ -344,12 +385,15 @@
 
         function endGame() {
             clearInterval(timerInterval);
-            // Kembalikan container ke mode normal (biar bisa discroll kalau hasil panjang)
+            // Kembali ke mode normal (bisa scroll)
             document.getElementById('main-container').classList.remove('game-mode');
             document.getElementById('game-screen').classList.remove('active');
             document.getElementById('result-screen').classList.add('active');
+            // Scroll otomatis ke atas hasil
+            document.getElementById('main-container').scrollTop = 0;
 
-            // --- Populate Data Hasil ---
+
+            // --- Populate Data ---
             let total = correctCount + wrongCount;
             document.getElementById('final-correct').innerText = correctCount;
             document.getElementById('final-wrong').innerText = wrongCount;
@@ -361,8 +405,7 @@
             let avgSpeed = total === 0 ? 0 : (totalTimePlayed / total).toFixed(2);
             document.getElementById('avg-speed').innerText = avgSpeed;
 
-            // --- Render Grafik Batang ---
-            // Gunakan setTimeout kecil agar transisi CSS bar width terlihat
+            // --- Render Grafik ---
             setTimeout(() => {
                 let fastPct = total === 0 ? 0 : (speedStats.fast / total) * 100;
                 document.getElementById('bar-fast').style.width = `${fastPct}%`;
